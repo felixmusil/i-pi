@@ -1,0 +1,8 @@
+These are the source code to build the libraries needed for WHBB
+
+2-body: just run ./mke to compile and then copy the libpes2b.a
+        to the "libs" folder of the WHBB PES
+
+3-body: Use the Makefile to compile. Then copy libpes3b.a to
+        the "libs" folder of the WHBB PES, and copy all the files
+        in "mods" folder here to the "mods" folder of WHBB

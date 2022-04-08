@@ -1,0 +1,77 @@
+1. General information about WHBB
+----------------------------------------------------------------------
+This is the WHBB water potential, which uses a many-body expansion
+
+(1) 1-body: WHBB uses spectroscopically accurate Partridge-Schwenke
+            H2O potential
+(2) 2-body: Permutationally Invariant Polynomial fit to
+            CCSD(T)/aug-cc-pVTZ data. It is switched to TTM3-F 2-body
+            at long range
+(3) 3-body: PIP fit to MP2 data. It is switched to zero
+            at long range. Two versions are available and more details
+            can be found below
+(4) 4-body and higher order interactions from TTM3-F potential. This
+    component is slow to evaluate and could be turned off.
+
+Details of WHBB can be found in the following paper:
+J. Chem. Phys. 134, 094509 (2011); https://doi.org/10.1063/1.3554905
+----------------------------------------------------------------------
+
+
+2. About this package
+----------------------------------------------------------------------
+There are 4 folders inside this package:
+(1) data: contains the coefficients of the PIP fits. "coef.pes2b.dat"
+          for the 2-body fit, "WHBB_MP2_3b5" for the 5th-order
+          polynomial fit of the 3-body, and "WHBB_MP2_3b6" for the
+          6th-order polynomial fit of the 3-body
+
+(2) mods: contains *.mod files that are required when compiling
+          the WHBB potential. gfortran is used to obtain these
+          .mod files
+
+(3) libs: contains libraries required for WHBB potential. These
+          libraries are also compiled with gfortran
+
+** NOTE: if you prefer other compilers such as Intel Fortran,
+   first go to lib_src and follow the README file there to recompile
+   the 2-body and 3-body libraries, and then compile the main
+   code (described below)
+
+(4) src: main code of the WHBB potential. The "pes_shell.f90" is the
+         code that interfaces the potential so a detailed
+         description is given below.
+
+    (a) r2i, r2f, r3i, r3f: The OO distance at which the 2b (or 3b)
+        potential is switched to TTM3-F (or zero). For hexamers,
+        OO distances should be smaller than the current r2i and r3i,
+        so switching is not used in this case.
+
+    (b) pes_init subroutine: reads in parameters of fits. This
+        subroutine must be called before evaluating the potential
+        energy. The version of the 3-body fit could be changed
+        by specifying a different folder of the coefficients.
+        The 6th-order fit is more accurate but much slower.
+
+    (c) function f: evaluates the potential. The input x is a one-
+        dimensional array of Cartesian coordinates, in bohr. The
+        order of atoms must be H1 H2 H3 H4 H5 H6 ... O1 O2 O3 ...;
+        H1 H2 O1 must be from the same monomer, H3 H4 O2 must be
+        from the same monomer, etc.
+        1-, 2-, 3-body contributions are usually significant, but
+        the potmb component could be turned off in many cases for
+        better compuational efficiency.
+
+    (d) gradient and hessian: only numerical finite difference 
+        is available in WHBB.
+
+    In addition, an example program getpot.f90 is provided that
+    illustrates how to call WHBB. A Makefile is provided for
+    compilation of the program. To run the example, use
+    ./getpot.x < 01_prism.xyz
+    and the potential energy (in hartree) will be printed
+
+    The energy of prism and cage (geometries from the supplementary
+    material of the paper J. Chem. Phys. 145, 194504 (2016);
+    https://doi.org/10.1063/1.4967719 without optimization) are
+    -0.07288437 and -0.07219443 hartree, respectively.
