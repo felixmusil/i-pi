@@ -6,7 +6,7 @@ doc/manual.xml
 *.pyc
 *.pyo
 *.x
-*.mod
+# *.mod
 *.out
 *.o
 *~

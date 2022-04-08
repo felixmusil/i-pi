@@ -1,0 +1,1 @@
+rm data.* ipi.out EXIT RESTART
