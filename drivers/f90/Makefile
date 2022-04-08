@@ -21,26 +21,6 @@
 
 .PHONY: all modules clean
 
-WHBBDIR := pes/WHBB
-WHBBLIBDIR := $(WHBBDIR)/libs
-WHBBMODDIR := $(WHBBDIR)/mods
-WHBBSRCDIR := $(WHBBDIR)/src
-# WHBBLIBBS := -L$(WHBBLIBDIR) -lpes3b -lpes2b -lwhbb
-WHBBLIBBS := -L$(WHBBLIBDIR) -lWHBB
-WHBBFALGS := -I$(WHBBMODDIR)
-OBJ := \
-$(WHBBSRCDIR)/constants.o\
-$(WHBBSRCDIR)/math.o\
-$(WHBBSRCDIR)/smear.o\
-$(WHBBSRCDIR)/ttm3f_mod2.o\
-$(WHBBSRCDIR)/mnasa_mod.o\
-$(WHBBSRCDIR)/mnasa.o\
-$(WHBBSRCDIR)/ttm3f_mb.o\
-$(WHBBSRCDIR)/pot_monomer_mod.o\
-$(WHBBSRCDIR)/pot_monomer.o\
-$(WHBBSRCDIR)/pes3b.o\
-$(WHBBSRCDIR)/pes_shell.o
-
 
 FLAGS=-g -O3 -Wall
 CFLAGS=$(FLAGS)
@@ -50,23 +30,28 @@ FFLAGS=$(FLAGS) -ffree-line-length-none -ffixed-line-length-none -Wno-maybe-unin
 MODULES=distance.f90 LJ.f90 SG.f90 pes/pswater.f90 pes/LEPS.f90 LJPolymer.f90 pes/efield.f90 pes/eckart.f90 pes/doublewell.f90 pes/doublewell_1D.f90 pes/MB.f90
 PES=pes/zundel.f pes/morse.f pes/qtip4pf.f pes/utility.f pes/ch52008.f
 
-OBJECTS=$(MODULES:%.f90=%.o) $(PES:%.f=%.o) # $(OBJ)
+OBJECTS=$(MODULES:%.f90=%.o) $(PES:%.f=%.o)
 FC=gfortran
 CC=gcc
+
+WHBBDIR := pes/WHBB
+WHBBLIBS := -L$(WHBBDIR)/libs -lWHBB
+WHBBFLAGS := -I$(WHBBDIR)/mods
+
 all: driver.x #driver_pure.x
 
 sockets.o: sockets.c
 	$(CC) $(CFLAGS) -c -o sockets.o sockets.c
 
 driver.x: $(OBJECTS) sockets.o fsockets.o driver.o | $(OBJECTS)
-	$(FC) $(FFLAGS) $(WHBBFALGS) -o driver.x $^ $(WHBBLIBBS)
+	$(FC) $(FFLAGS) $(WHBBFLAGS) -o driver.x $^ $(WHBBLIBS)
 	ln -fs ../drivers/f90/driver.x ../../bin/i-pi-driver
 
 driver_pure.x: $(OBJECTS) fsockets_pure.o driver.o | $(OBJECTS)
-	$(FC) $(FFLAGS) -o driver_pure.x $^
+	$(FC) $(FFLAGS) $(WHBBFLAGS) -o driver_pure.x $^ $(WHBBLIBS)
 
 %.o: %.f90
-	$(FC) $(FFLAGS) $(WHBBFALGS) -c $< -o $@
+	$(FC) $(FFLAGS) $(WHBBFLAGS) -c $< -o $@
 
 %.o: %.f
 	$(FC) $(FFLAGS) -c $< -o $@
