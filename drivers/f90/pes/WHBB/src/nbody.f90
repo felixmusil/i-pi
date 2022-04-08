@@ -11,7 +11,7 @@ subroutine pot1b(natm,xx,pot)
   real,dimension(natm/3,3)::rij
   real,dimension(natm/3)::e1
   integer::i,fo,nw
- 
+
   nw=natm/3
   fo=nw*2
   pot=0.d0
@@ -44,29 +44,29 @@ subroutine pot1b_g(natm,xx,pot,im)
   real,dimension(3,3)::xr
   real,dimension(1,3)::rij
   integer::i,fo
-  real::e1
-  
+  real,dimension(1)::e1
+
   fo=natm/3*2
   if (im>fo) then
      i=im-fo
   else
      i=(im+1)/2
   end if
-  
+
   x1(1:3)=xx(:,i*2-1)
   x1(4:6)=xx(:,i*2)
   x1(7:9)=xx(:,i+fo)
-  
+
   call bond(3,x1,xr)
   !h2o pot
   rij(1,1)=xr(1,3)  !O3-H1
   rij(1,2)=xr(2,3)  !O3-H2
   rij(1,3)=(xr(1,3)**2+xr(2,3)**2-xr(1,2)**2)*0.5/xr(1,3)/xr(2,3) !cos
   rij(1,3)=dacos(rij(1,3))  !angle H1-O3-H2
-  
-  call vibpot(rij(1,1:3),e1,1)
-  pot=pot+e1
-  
+
+  call vibpot(rij,e1,1)
+  pot=pot+e1(1)
+
   return
 end subroutine pot1b_g
 !==================================================
@@ -121,9 +121,9 @@ subroutine potc2bt1_g(natm,xx,pot,im)
   real,dimension(3,6)::xttm,df
   real::e2,vect(3),ettm(4),rmax,s
   integer::i,k
-  
+
   e2=0.d0;pot=0.d0
-  
+
   do i=1,size(idx_2b,2)
      if (any(idx_2b(:,i)==im)) then
         x2((/(k,k=1,6)/),:)=transpose(xx(:,idx_2b(:,i)))
@@ -148,7 +148,7 @@ subroutine potc2bt1_g(natm,xx,pot,im)
         end if
      end if
   end do
-  
+
   return
 end subroutine potc2bt1_g
 !==================================================
@@ -172,7 +172,7 @@ subroutine potc3b(natm,xx,pot)
      roo=(/rr(1,2),rr(1,3),rr(2,3)/)
      rmax=maxval(roo)
 
-     if (rmax<r3f) then  
+     if (rmax<r3f) then
         e3=fpes(x3)      ! three-body correction
         if (rmax<r3i) then
            pot=pot+e3
@@ -181,9 +181,9 @@ subroutine potc3b(natm,xx,pot)
            pot=pot+(1-s)*e3
         end if
      end if
-     
+
   end do
-  
+
   return
 end subroutine potc3b
 !==================================================
@@ -197,7 +197,7 @@ subroutine potc3b_g(natm,xx,pot,im)
   real::e3,rr(3,3),roo(3),rmax,s
   real,external::fpes
   integer::i,k
-  
+
   e3=0.d0;pot=0.d0
   do i=1,size(idx_3b,2)
      if (any(idx_3b(:,i)==im)) then
@@ -216,10 +216,10 @@ subroutine potc3b_g(natm,xx,pot,im)
               pot=pot+(1-s)*e3
            end if
         end if
-        
+
      end if
-  end do   
-  
+  end do
+
   return
 end subroutine potc3b_g
 
@@ -237,7 +237,7 @@ subroutine potmb(natm,xx,pot)
   real::ettm(4),e2
   integer::nw,i
 
-  nw=natm/3 
+  nw=natm/3
   pot=0.d0
   ettm=0.d0
   !full ttm3-f energy for the cluster
@@ -331,7 +331,7 @@ subroutine bond(natm,xx,rr)
   !::::::::::::::::::::
   real,dimension(1:3)::vect
   integer::i,j
-  
+
   do i=1,natm-1
      do j=i+1,natm
         vect(:)=xx(i*3-2:i*3)-xx(j*3-2:j*3)
@@ -374,7 +374,7 @@ subroutine pot1b_h(natm,xx,pot,im,jm)
   real,dimension(3,3)::xr
   real,dimension(1,3)::rij
   integer::i,j,fo
-  real::e1
+  real,dimension(1)::e1
 
   fo=natm/3*2
 
@@ -398,9 +398,9 @@ subroutine pot1b_h(natm,xx,pot,im,jm)
   rij(1,2)=xr(2,3)  !O3-H2
   rij(1,3)=(xr(1,3)**2+xr(2,3)**2-xr(1,2)**2)*0.5/xr(1,3)/xr(2,3) !cos
   rij(1,3)=dacos(rij(1,3))  !angle H1-O3-H2
-  
-  call vibpot(rij(1,1:3),e1,1)
-  pot=pot+e1+0.000001910936
+
+  call vibpot(rij,e1,1)
+  pot=pot+e1(1)+0.000001910936
 
   if (i/=j) then
      i=j
@@ -413,9 +413,9 @@ subroutine pot1b_h(natm,xx,pot,im,jm)
      rij(1,2)=xr(2,3)  !O3-H2
      rij(1,3)=(xr(1,3)**2+xr(2,3)**2-xr(1,2)**2)*0.5/xr(1,3)/xr(2,3) !cos
      rij(1,3)=dacos(rij(1,3))  !angle H1-O3-H2
-     
-     call vibpot(rij(1,1:3),e1,1)
-     pot=pot+e1+0.000001910936
+
+     call vibpot(rij,e1,1)
+     pot=pot+e1(1)+0.000001910936
   end if
 
   return
@@ -480,7 +480,7 @@ subroutine potc3b_h(natm,xx,pot,im,jm)
         call bond(3,x3(:,(/7,8,9/)),rr)
         roo=(/rr(1,2),rr(1,3),rr(2,3)/)
         rmax=maxval(roo)
-        
+
         if (rmax<r3f) then
            e3=fpes(x3)      ! three-body correction
            if (rmax<r3i) then

@@ -1,4 +1,4 @@
-        subroutine prepot(dname)
+        subroutine prepot_2b(dname)
 
 !        implicit none
         implicit double precision (a-h,o-z)

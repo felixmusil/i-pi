@@ -10,6 +10,8 @@ FFLAGS := -O -fdefault-real-8 -fdefault-double-8 -J$(MODDIR)
 #LIBS := -L$(LIBDIR) -lpes3b -lpes2b
 #FFLAGS := -O -r8 -I$(MODDIR)
 
+BLD := /usr/bin/ar -rcv
+
 vpath %.f90 src
 
 OBJ := \
@@ -23,19 +25,22 @@ ttm3f_mb.o\
 pot_monomer_mod.o\
 pot_monomer.o\
 pes3b.o\
-pes_shell.o\
-getpot.o
+pes_shell.o
 
 # Targets:
-.PHONY : clean 
+.PHONY : clean
+
+all : libwhbb.a
 
 %.o : %.f90
-	$(FC) -c $(FFLAGS) $< 
+	$(FC) -c $(FFLAGS) $<
 %.o : %.f
-	$(FC) -c $(FFLAGS) $< 
+	$(FC) -c $(FFLAGS) $<
 
-getpot.x :  $(OBJ)
-	$(FC) -o $@  $^ $(FFLAGS) $(LIBS)
+libwhbb.a : $(OBJ)
+	$(BLD) $(@F) $(OBJ)
+# getpot.x :  $(OBJ)
+# 	$(FC) -o $@  $^ $(FFLAGS) $(LIBS)
 
 clean :
-	rm *.o *.mod 
+	rm *.o *.a

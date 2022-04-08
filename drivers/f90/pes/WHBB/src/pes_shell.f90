@@ -26,12 +26,12 @@ contains
     !::::::::::::::::::::
 
     ! 3-body init
-    call pes_init_3b('../data/WHBB_MP2_3b5') ! Change this for another version of the fit
+    call pes_init_3b('./') ! Change this for another version of the fit
     allocate(idx_3b(9,nw*(nw-1)*(nw-2)/6))
     call map_3b(nw,idx_3b)
 
     ! 2-body init
-    call prepot('../data/coef.pes2b.dat')
+    call prepot_2b('./coef.pes2b.dat')
     allocate(idx_2b(6,nw*(nw-1)/2))
     call map_2b(nw,idx_2b)
 
@@ -51,7 +51,7 @@ contains
   !  jm: optional augument should only be used for   !
   !      efficient finite-difference hessian         !
   ! * To obtain the full potential of water cluster, !
-  !   one should call this function with ONLY ONE    ! 
+  !   one should call this function with ONLY ONE    !
   !   argument, simply as f(x)                       !
   !==================================================!
   function f(x,im,jm) result(pot)
@@ -89,7 +89,7 @@ contains
 
   !==================================================!
   ! efficient numerical gradient of the potential    !
-  !==================================================!  
+  !==================================================!
   function gradient(x) result(gd)
     real,dimension(:),intent(in)::x
     !::::::::::::::::::::
@@ -102,7 +102,7 @@ contains
     dim=size(x)
 
     do i=1,dim
-       ! im: index of the atom 
+       ! im: index of the atom
        im=(i+2)/3
        xt=x; xt(i)=xt(i)-eps
        fa=f(xt,im)
