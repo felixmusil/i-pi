@@ -72,27 +72,21 @@ contains
     p1=0.d0; p2=0.d0; p3=0.d0; pmb=0.d0
 
     if (present(jm)) then ! these are used to compute finite-difference Hessian efficiently
-      WRITE(*,*) " in pot eval do FD for hessian"
        call pot1b_h(natm,xn,p1,im,jm)
 
        call potc2bt1_h(natm,xn,p2,im,jm)
        call potc3b_h(natm,xn,p3,im,jm)
     elseif (present(im))then ! these are used to compute finite-difference gradient efficiently
-      WRITE(*,*) " in pot eval do FD for force"
        call pot1b_g(natm,xn,p1,im)
        call potc2bt1_g(natm,xn,p2,im)
        call potc3b_g(natm,xn,p3,im)
     else ! these are just used to compute the potential energy
 
        call pot1b(natm,xn,p1)    ! 1-body
-       WRITE(*,*) "pot eval", p1
        call potc2bt1(natm,xn,p2) ! 2-body
-       WRITE(*,*) "pot eval 2b", p2
        call potc3b(natm,xn,p3)   ! 3-body
-       WRITE(*,*) "pot eval 3b", p3
     end if
     call potmb(natm,xn,pmb) ! include TTM3-F 4b and higher-order interactions
-    WRITE(*,*) "pot eval 4b", pmb
     pot=p1+p2+p3+pmb
 
     return

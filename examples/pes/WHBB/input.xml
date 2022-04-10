@@ -22,7 +22,7 @@
       <force forcefield='driver'/>
     </forces>
     <initialize nbeads='1'>
-      <file mode='xyz' units='angstrom'>01_prism.xyz</file>
+      <file mode='xyz' units='angstrom'>02_cage.xyz</file>
       <cell>
          [   25.29166, 0, 0, 0, 25.29166, 0, 0, 0, 25.29166 ]
         </cell>
