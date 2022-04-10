@@ -3,8 +3,8 @@ LIBDIR := ../libs
 MODDIR := ../mods
 
 FC := gfortran
-LIBS := -L$(LIBDIR) -lpes3b -lpes2b
-FFLAGS := -O -fdefault-real-8 -fdefault-double-8 -J$(MODDIR)
+LIBS := -L$(LIBDIR) -lpes3b
+FFLAGS := -g -O -fdefault-real-8 -fdefault-double-8  -J$(MODDIR)
 
 #FC := ifort
 #LIBS := -L$(LIBDIR) -lpes3b -lpes2b
@@ -22,11 +22,14 @@ ttm3f_mod2.o\
 mnasa_mod.o\
 mnasa.o\
 ttm3f_mb.o\
-pot_monomer_mod.o\
-pot_monomer.o\
+pot_1b.o\
 pes3b.o\
+pot_2b.o\
 pes_shell.o
 
+# pes3b.o\
+pot_monomer_mod.o\
+pot_monomer.o\
 # Targets:
 .PHONY : clean
 

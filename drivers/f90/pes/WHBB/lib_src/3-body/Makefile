@@ -1,5 +1,5 @@
 FC = gfortran
-FFLAGS = -O -fdefault-real-8 -fdefault-double-8 -ffree-line-length-0 -J./mods
+FFLAGS = -g -O -fdefault-real-8 -fdefault-double-8 -ffree-line-length-0  -J../../mods
 #FC = ifort
 #FFLAGS = -O -r8 -u -module ./mods
 

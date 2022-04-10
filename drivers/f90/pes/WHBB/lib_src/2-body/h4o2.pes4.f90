@@ -50,18 +50,20 @@
 
         double precision rvec(0:3),d0(0:5,0:5),r0(0:5,0:5),vec(0:ms+3*mr-1)
         double precision xnuc(0:2,0:5)
-
+        WRITE(*,*) i,"eval pot 2b calcpot"
          do j=1,3
           xnuc(j-1,0:1)=cart_in(2:3,j)
           xnuc(j-1,2:3)=cart_in(5:6,j)
           xnuc(j-1,4)=cart_in(1,j)
           xnuc(j-1,5)=cart_in(4,j)
         end do
+        WRITE(*,*) i,"eval pot 2b loop"
         call getvec (ms, mr, xnuc(0:2,0:5), vec)
-
+        WRITE(*,*) i,"eval pot 2b getvec"
         V = dot_product(coef,vec)
+        WRITE(*,*) i,"eval pot 2b dot"
         V = V + 152.68465163999
-
+        WRITE(*,*) i,"eval pot 2b end"
         return
         end subroutine calcpot
 

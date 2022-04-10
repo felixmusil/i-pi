@@ -22,7 +22,7 @@
 .PHONY: all modules clean
 
 
-FLAGS=-g -O3 -Wall
+FLAGS=-g -O -Wall
 CFLAGS=$(FLAGS)
 FFLAGS=$(FLAGS) -ffree-line-length-none -ffixed-line-length-none -Wno-maybe-uninitialized
 #FFLAGS=-g -O0 -fcheck=all -Wall -pedantic -ffree-line-length-none

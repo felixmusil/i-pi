@@ -3,13 +3,13 @@
 !==================================================
 subroutine pot1b(natm,xx,pot)
   integer,intent(in)::natm
-  real,dimension(3,natm),intent(in)::xx
-  real,intent(inout)::pot
+  DOUBLE PRECISION,dimension(3,natm),intent(in)::xx
+  DOUBLE PRECISION,intent(inout)::pot
   !::::::::::::::::::::
-  real,dimension(1:9)::x1
-  real,dimension(3,3)::xr
-  real,dimension(natm/3,3)::rij
-  real,dimension(natm/3)::e1
+  DOUBLE PRECISION,dimension(1:9)::x1
+  DOUBLE PRECISION,dimension(3,3)::xr
+  DOUBLE PRECISION,dimension(natm/3,3)::rij
+  DOUBLE PRECISION,dimension(natm/3)::e1
   integer::i,fo,nw
 
   nw=natm/3
@@ -36,15 +36,15 @@ end subroutine pot1b
 !==================================================
 subroutine pot1b_g(natm,xx,pot,im)
   integer,intent(in)::natm
-  real,dimension(3,natm),intent(in)::xx
-  real,intent(inout)::pot
+  DOUBLE PRECISION,dimension(3,natm),intent(in)::xx
+  DOUBLE PRECISION,intent(inout)::pot
   integer,intent(in)::im
   !::::::::::::::::::::
-  real,dimension(1:9)::x1
-  real,dimension(3,3)::xr
-  real,dimension(1,3)::rij
+  DOUBLE PRECISION,dimension(1:9)::x1
+  DOUBLE PRECISION,dimension(3,3)::xr
+  DOUBLE PRECISION,dimension(1,3)::rij
   integer::i,fo
-  real,dimension(1)::e1
+  DOUBLE PRECISION,dimension(1)::e1
 
   fo=natm/3*2
   if (im>fo) then
@@ -75,24 +75,21 @@ end subroutine pot1b_g
 !==================================================
 subroutine potc2bt1(natm,xx,pot)
   integer,intent(in)::natm
-  real,dimension(3,natm),intent(in)::xx
-  real,intent(inout)::pot
+  DOUBLE PRECISION,dimension(3,natm),intent(in)::xx
+  DOUBLE PRECISION,intent(inout)::pot
   !::::::::::::::::::::
-  real,dimension(6,3)::x2
-  real,dimension(3,6)::xttm,df
-  real::e2,vect(3),ettm(4),rmax,s
+  DOUBLE PRECISION,dimension(6,3)::x2
+  DOUBLE PRECISION,dimension(3,6)::xttm,df
+  DOUBLE PRECISION::e2,vect(3),ettm(4),rmax,s
   integer::i,k
 
   e2=0.d0;pot=0.d0
-
   do i=1,size(idx_2b,2)
      x2((/(k,k=1,6)/),:)=transpose(xx(:,idx_2b(:,i)))
      vect(:)=x2(4,:)-x2(1,:)
      rmax=sqrt(sum(vect*vect))
-
      if (rmax<r2f) then
-        call calcpot(e2,x2,2)
-
+        call calcpot_2b(e2,x2)
         if (rmax<r2i) then
            pot=pot+e2
         else
@@ -113,13 +110,13 @@ end subroutine potc2bt1
 !==================================================
 subroutine potc2bt1_g(natm,xx,pot,im)
   integer,intent(in)::natm
-  real,dimension(3,natm),intent(in)::xx
-  real,intent(inout)::pot
+  DOUBLE PRECISION,dimension(3,natm),intent(in)::xx
+  DOUBLE PRECISION,intent(inout)::pot
   integer,intent(in)::im
   !::::::::::::::::::::
-  real,dimension(6,3)::x2
-  real,dimension(3,6)::xttm,df
-  real::e2,vect(3),ettm(4),rmax,s
+  DOUBLE PRECISION,dimension(6,3)::x2
+  DOUBLE PRECISION,dimension(3,6)::xttm,df
+  DOUBLE PRECISION::e2,vect(3),ettm(4),rmax,s
   integer::i,k
 
   e2=0.d0;pot=0.d0
@@ -131,7 +128,7 @@ subroutine potc2bt1_g(natm,xx,pot,im)
         rmax=sqrt(sum(vect*vect))
 
         if (rmax<r2f) then
-           call calcpot(e2,x2,2)
+           call calcpot_2b(e2,x2)
 
            if (rmax<r2i) then
               pot=pot+e2
@@ -156,12 +153,12 @@ end subroutine potc2bt1_g
 !==================================================
 subroutine potc3b(natm,xx,pot)
   integer,intent(in)::natm
-  real,dimension(3,natm),intent(in)::xx
-  real,intent(inout)::pot
+  DOUBLE PRECISION,dimension(3,natm),intent(in)::xx
+  DOUBLE PRECISION,intent(inout)::pot
   !::::::::::::::::::::
-  real,dimension(3,9)::x3
-  real::e3,rr(3,3),roo(3),rmax,s
-  real,external::fpes
+  DOUBLE PRECISION,dimension(3,9)::x3
+  DOUBLE PRECISION::e3,rr(3,3),roo(3),rmax,s
+  DOUBLE PRECISION,external::fpes
   integer::i,k
 
   pot=0.d0
@@ -189,13 +186,13 @@ end subroutine potc3b
 !==================================================
 subroutine potc3b_g(natm,xx,pot,im)
   integer,intent(in)::natm
-  real,dimension(3,natm),intent(in)::xx
-  real,intent(inout)::pot
+  DOUBLE PRECISION,dimension(3,natm),intent(in)::xx
+  DOUBLE PRECISION,intent(inout)::pot
   integer,intent(in)::im
   !::::::::::::::::::::
-  real,dimension(3,9)::x3
-  real::e3,rr(3,3),roo(3),rmax,s
-  real,external::fpes
+  DOUBLE PRECISION,dimension(3,9)::x3
+  DOUBLE PRECISION::e3,rr(3,3),roo(3),rmax,s
+  DOUBLE PRECISION,external::fpes
   integer::i,k
 
   e3=0.d0;pot=0.d0
@@ -228,13 +225,13 @@ end subroutine potc3b_g
 !==================================================
 subroutine potmb(natm,xx,pot)
   integer,intent(in)::natm
-  real,dimension(3,natm),intent(in)::xx
-  real,intent(inout)::pot
+  DOUBLE PRECISION,dimension(3,natm),intent(in)::xx
+  DOUBLE PRECISION,intent(inout)::pot
   !::::::::::::::::::::
-  real,dimension(3,9)::x3ttm,d3f
-  real,dimension(3,6)::x2ttm,d2f
-  real,dimension(3,natm)::xttm,df
-  real::ettm(4),e2
+  DOUBLE PRECISION,dimension(3,9)::x3ttm,d3f
+  DOUBLE PRECISION,dimension(3,6)::x2ttm,d2f
+  DOUBLE PRECISION,dimension(3,natm)::xttm,df
+  DOUBLE PRECISION::ettm(4),e2
   integer::nw,i
 
   nw=natm/3
@@ -326,10 +323,10 @@ end subroutine map_2b
 !==================================================
 subroutine bond(natm,xx,rr)
   integer,intent(in)::natm
-  real,dimension(1:natm*3),intent(in)::xx
-  real,dimension(1:natm,1:natm),intent(inout)::rr
+  DOUBLE PRECISION,dimension(1:natm*3),intent(in)::xx
+  DOUBLE PRECISION,dimension(1:natm,1:natm),intent(inout)::rr
   !::::::::::::::::::::
-  real,dimension(1:3)::vect
+  DOUBLE PRECISION,dimension(1:3)::vect
   integer::i,j
 
   do i=1,natm-1
@@ -348,10 +345,10 @@ end subroutine bond
 !switching functions for combining HBB and TTM3-F
 !==================================================
 subroutine f_switch(s,r,ri,rf)
-  real,intent(out)::s
-  real,intent(in)::r,ri,rf
+  DOUBLE PRECISION,intent(out)::s
+  DOUBLE PRECISION,intent(in)::r,ri,rf
   !::::::::::::::::::::
-  real::ra,ra2,ra3
+  DOUBLE PRECISION::ra,ra2,ra3
 
   ra=(r-ri)/(rf-ri)
   ra2=ra*ra
@@ -366,15 +363,15 @@ end subroutine f_switch
 !======================================================
 subroutine pot1b_h(natm,xx,pot,im,jm)
   integer,intent(in)::natm
-  real,dimension(3,natm),intent(in)::xx
-  real,intent(inout)::pot
+  DOUBLE PRECISION,dimension(3,natm),intent(in)::xx
+  DOUBLE PRECISION,intent(inout)::pot
   integer,intent(in)::im,jm
   !::::::::::::::::::::
-  real,dimension(1:9)::x1
-  real,dimension(3,3)::xr
-  real,dimension(1,3)::rij
+  DOUBLE PRECISION,dimension(1:9)::x1
+  DOUBLE PRECISION,dimension(3,3)::xr
+  DOUBLE PRECISION,dimension(1,3)::rij
   integer::i,j,fo
-  real,dimension(1)::e1
+  DOUBLE PRECISION,dimension(1)::e1
 
   fo=natm/3*2
 
@@ -423,13 +420,13 @@ end subroutine pot1b_h
 
 subroutine potc2bt1_h(natm,xx,pot,im,jm)
   integer,intent(in)::natm
-  real,dimension(3,natm),intent(in)::xx
-  real,intent(inout)::pot
+  DOUBLE PRECISION,dimension(3,natm),intent(in)::xx
+  DOUBLE PRECISION,intent(inout)::pot
   integer,intent(in)::im,jm
   !::::::::::::::::::::
-  real,dimension(6,3)::x2
-  real,dimension(3,6)::xttm,df
-  real::e2,vect(3),ettm(4),rmax,s
+  DOUBLE PRECISION,dimension(6,3)::x2
+  DOUBLE PRECISION,dimension(3,6)::xttm,df
+  DOUBLE PRECISION::e2,vect(3),ettm(4),rmax,s
   integer::i,k
 
   e2=0.d0;pot=0.d0
@@ -441,7 +438,7 @@ subroutine potc2bt1_h(natm,xx,pot,im,jm)
         rmax=sqrt(sum(vect*vect))
 
         if (rmax<r2f) then
-           call calcpot(e2,x2,2)
+           call calcpot_2b(e2,x2)
 
            if (rmax<r2i) then
               pot=pot+e2
@@ -464,13 +461,13 @@ end subroutine potc2bt1_h
 
 subroutine potc3b_h(natm,xx,pot,im,jm)
   integer,intent(in)::natm
-  real,dimension(3,natm),intent(in)::xx
-  real,intent(inout)::pot
+  DOUBLE PRECISION,dimension(3,natm),intent(in)::xx
+  DOUBLE PRECISION,intent(inout)::pot
   integer,intent(in)::im,jm
   !::::::::::::::::::::
-  real,dimension(3,9)::x3
-  real::e3,rr(3,3),roo(3),rmax,s
-  real,external::fpes
+  DOUBLE PRECISION,dimension(3,9)::x3
+  DOUBLE PRECISION::e3,rr(3,3),roo(3),rmax,s
+  DOUBLE PRECISION,external::fpes
   integer::i,k
 
   e3=0.d0;pot=0.d0

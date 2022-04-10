@@ -54,8 +54,8 @@
       INTEGER cbuf, rid, length
       CHARACTER(LEN=4096) :: initbuffer      ! it's unlikely a string this large will ever be passed...
       CHARACTER(LEN=4096) :: string,string2,trimmed  ! it's unlikely a string this large will ever be passed...
-      DOUBLE PRECISION, ALLOCATABLE :: msgbuffer(:), forcebuffer(:)
-
+      DOUBLE PRECISION, ALLOCATABLE :: msgbuffer(:)
+      DOUBLE PRECISION, ALLOCATABLE :: forcesbuffer(:)
       ! PARAMETERS OF THE SYSTEM (CELL, ATOM POSITIONS, ...)
       DOUBLE PRECISION sigma, eps, rc, rn, ks ! potential parameters
       DOUBLE PRECISION stiffness ! lennard-jones polymer
@@ -211,8 +211,7 @@
          isinit = .true.
       ELSEIF (11== vstyle) THEN
          IF (par_count .ne. 3) THEN
-            WRITE(*,*) "Error:  incorrect initialization string included for qtip4pf-efield. &
-     &             Provide the three components of the electric field in V/nm"
+            WRITE(*,*) "Error:  incorrect initialization string included for qtip4pf-efield. Provide the three components of the electric field in V/nm"
             STOP "ENDED"
          ELSE
             ! We take in an electric field in volts / nm.This must be converted to Eh / (e a0).
@@ -231,9 +230,10 @@
          isinit = .true.
       ELSEIF (26 == vstyle) THEN !WHBB
          IF (par_count /= 0) THEN
-            WRITE(*,*) "Error: no initialization string needed for Partridge-Schwenke H2O potential."
+            WRITE(*,*) "Error: no initialization string needed for WHBB n-H2O potential."
             STOP "ENDED"
          END IF
+         WRITE(*,*) " INIT "
          isinit = .true.
       ELSEIF (21 == vstyle) THEN
          IF (par_count /= 0) THEN
@@ -307,8 +307,7 @@
          isinit = .true.
       ELSEIF (vstyle == 11) THEN
          IF (par_count .ne. 3) THEN
-            WRITE(*,*) "Error:  incorrect initialization string included for qtip4pf-efield. &
-     &    Provide the three components of the electric field in V/nm"
+            WRITE(*,*) "Error:  incorrect initialization string included for qtip4pf-efield. Provide the three components of the electric field in V/nm"
             STOP "ENDED"
          ELSE
             ! We take in an electric field in volts / nm.This must be converted
@@ -440,22 +439,32 @@
             IF (nat < 0) THEN  ! Assumes that the number of atoms does not change throughout a simulation, so only does this once
                nat = cbuf
                IF (verbose > 0) WRITE(*,*) " Allocating buffer and data arrays, with ", nat, " atoms"
-               ALLOCATE(msgbuffer(3*nat), forcebuffer(3*nat))
+               ALLOCATE(msgbuffer(3*nat))
                ALLOCATE(atoms(nat,3), datoms(nat,3))
                ALLOCATE(forces(nat,3))
+               ALLOCATE(forcesbuffer(3*nat))
                ALLOCATE(friction(3*nat,3*nat))
                atoms = 0.0d0
                datoms = 0.0d0
                forces = 0.0d0
                friction = 0.0d0
                msgbuffer = 0.0d0
-               forcebuffer = 0.0d0
+               forcesbuffer = 0.0d0
+               IF (26 == vstyle) THEN !WHBB
+                  IF (mod(nat,3)/=0) THEN
+                     WRITE(*,*) " Expecting water molecules H H H H H H O O O but got ", nat, "atoms"
+                     STOP "ENDED"
+                  ENDIF
+                  WRITE(*,*) " start working "
+                  call pes_init(nat / 3)
+               ENDIF
             ENDIF
 
             CALL readbuffer(socket, msgbuffer, nat*3)
             IF (verbose > 1) WRITE(*,*) "    !read!=> positions: ", msgbuffer
             DO i = 1, nat
                atoms(i,:) = msgbuffer(3*(i-1)+1:3*i)
+               ! atomsbuffer()
             ENDDO
 
             IF (vstyle == 0) THEN   ! ideal gas, so no calculation done
@@ -573,17 +582,16 @@
                ENDIF
                CALL efield_v(atoms,nat,forces,pot,virial,efield)
             ELSEIF (vstyle == 26) THEN !WHBB
-               IF (mod(nat,3)/=0) THEN
-                  WRITE(*,*) " Expecting water molecules H H H H H H O O O but got ", nat, "atoms"
-                  STOP "ENDED"
-               ENDIF
-               call pes_init(nat / 3)
+               WRITE(*,*) " did pes_init "
                pot = f(msgbuffer)
-               forcebuffer = gradient(msgbuffer)
+               write(*,'(A,F16.8)') "Potential (hartree): ", pot
+               forcesbuffer = gradient(msgbuffer)
+               WRITE(*,*) " did gradient "
                DO i = 1, nat
-                  forces(i,:) = forcebuffer(3*(i-1)+1:3*i)
+                  forces(i,:) = forcesbuffer(3*(i-1)+1:3*i)
+                  write(*,'(I4,3F15.8)') i,forcesbuffer(i*3-2:i*3)
                ENDDO
-
+               WRITE(*,*) " pushed forces "
             ELSEIF (vstyle == 8) THEN ! PS water potential.
                IF (nat/=3) THEN
                   WRITE(*,*) "Expecting 3 atoms for P-S water potential, O H H "
@@ -757,7 +765,7 @@
             STOP "ENDED"
          ENDIF
       ENDDO
-      IF (nat > 0) DEALLOCATE(atoms, forces, msgbuffer, friction, forcebuffer)
+      IF (nat > 0) DEALLOCATE(atoms, forces, msgbuffer, friction, forcesbuffer)
 
     CONTAINS
       SUBROUTINE helpmessage
