@@ -4,7 +4,7 @@ MODDIR := ../mods
 
 FC := gfortran
 LIBS := -L$(LIBDIR) -lpes3b
-FFLAGS := -g -O -fdefault-real-8 -fdefault-double-8  -J$(MODDIR)
+FFLAGS := -O3 -fdefault-real-8 -fdefault-double-8  -J$(MODDIR)
 
 #FC := ifort
 #LIBS := -L$(LIBDIR) -lpes3b -lpes2b
