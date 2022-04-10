@@ -6,13 +6,11 @@
     <timeout>  6.000000e+00</timeout>
     <address>prism</address>
   </ffsocket>
-  <total_steps>1</total_steps>
+  <total_steps>40000</total_steps>
   <output prefix='data'>
-    <trajectory stride='2' filename='pos' cell_units='angstrom'>positions{angstrom}</trajectory>
-    <trajectory stride='2' filename='xc' format='xyz'>x_centroid{angstrom}</trajectory>
-    <trajectory stride='2' filename='xc2' format='xyz'>x_centroid</trajectory>
-    <trajectory stride='2' filename='vc'>v_centroid</trajectory>
-    <properties stride='1'> [step, potential] </properties>
+    <trajectory stride='40' filename='pos' cell_units='angstrom'>positions{angstrom}</trajectory>
+    <trajectory stride='40' filename='xc' format='xyz'>x_centroid{angstrom}</trajectory>
+    <properties stride='40'> [time{picosecond}, conserved, temperature{kelvin},potential, kinetic_md, kinetic_cv, kinetic_cv(O), kinetic_cv(H)] </properties>
   </output>
   <prng>
     <seed>18885</seed>
@@ -22,7 +20,7 @@
       <force forcefield='driver'/>
     </forces>
     <initialize nbeads='1'>
-      <file mode='xyz' units='angstrom'>02_cage.xyz</file>
+      <file mode='xyz' units='angstrom'>01_prism.xyz</file>
       <cell>
          [   25.29166, 0, 0, 0, 25.29166, 0, 0, 0, 25.29166 ]
         </cell>

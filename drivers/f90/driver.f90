@@ -233,7 +233,6 @@
             WRITE(*,*) "Error: no initialization string needed for WHBB n-H2O potential."
             STOP "ENDED"
          END IF
-         WRITE(*,*) " INIT "
          isinit = .true.
       ELSEIF (21 == vstyle) THEN
          IF (par_count /= 0) THEN
@@ -455,7 +454,6 @@
                      WRITE(*,*) " Expecting water molecules H H H H H H O O O but got ", nat, "atoms"
                      STOP "ENDED"
                   ENDIF
-                  WRITE(*,*) " start working "
                   call pes_init(nat / 3)
                ENDIF
             ENDIF
@@ -582,16 +580,16 @@
                ENDIF
                CALL efield_v(atoms,nat,forces,pot,virial,efield)
             ELSEIF (vstyle == 26) THEN !WHBB
-               WRITE(*,*) " did pes_init "
+               ! WRITE(*,*) " did pes_init "
                pot = f(msgbuffer)
-               write(*,'(A,F16.8)') "Potential (hartree): ", pot
-               forcesbuffer = gradient(msgbuffer)
-               WRITE(*,*) " did gradient "
+               ! write(*,'(A,F16.8)') "Potential (hartree): ", pot
+               forcesbuffer = -gradient(msgbuffer)
+               ! WRITE(*,*) " did gradient "
                DO i = 1, nat
                   forces(i,:) = forcesbuffer(3*(i-1)+1:3*i)
-                  write(*,'(I4,3F15.8)') i,forcesbuffer(i*3-2:i*3)
+                  ! write(*,'(I4,3F15.8)') i,forcesbuffer(i*3-2:i*3)
                ENDDO
-               WRITE(*,*) " pushed forces "
+               ! WRITE(*,*) " pushed forces "
             ELSEIF (vstyle == 8) THEN ! PS water potential.
                IF (nat/=3) THEN
                   WRITE(*,*) "Expecting 3 atoms for P-S water potential, O H H "

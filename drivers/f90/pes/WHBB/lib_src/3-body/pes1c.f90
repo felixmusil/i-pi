@@ -15,7 +15,7 @@ character (len=*), intent (in) :: sys
 !------------------------------------------------------------------------
 ! Announce the intent
 !write (*,*) 'Expected data: ', sys(1:len_trim(sys))
-write(*,*) "Initializing H2O-H2O-H2O potential!"
+! write(*,*) "Initializing H2O-H2O-H2O potential!"
 ! Read pcf data for generic xyz systems
 call pes1_init_xyz (sys)
 return

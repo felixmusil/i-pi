@@ -24,10 +24,10 @@
         read(20,*)
         read(20,*)
         read(20,*)(coef(i1),i1=0,ms+3*mr-1)
-!        write(*,*)(coef(i1),i1=0,ms+3*mr-1)
+        ! write(*,*)(coef(i1),i1=0,ms+3*mr-1)
         close(20)
 
-        write(*,*) "Initializing H2O-H2O potential!"
+        ! write(*,*) "Initializing H2O-H2O potential!"
         return
         end
 
