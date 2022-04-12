@@ -1991,7 +1991,7 @@ contains
     read(20,*)(coef(i1),i1=0,ms+mr-1)
     close(20)
 
-    write(*,*) "Initializing H2O-H2O dipole!"
+    ! write(*,*) "Initializing H2O-H2O dipole!"
     return
   end subroutine predip
 

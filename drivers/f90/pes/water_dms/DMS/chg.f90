@@ -18,11 +18,6 @@ contains
     integer :: i
 
     call mon_rtheta(xx,r1,r2,cos_theta)
-    write(*,*) "#############"
-    do i=1,3
-      write(*,'(I4,3F15.8)') i,xx(:, i)
-    end do
-    write(*,*) r1,r2,cos_theta
     call DIPS(muy,mux,r1,r2,cos_theta)
 
     htheta=0.5*acos(cos_theta)

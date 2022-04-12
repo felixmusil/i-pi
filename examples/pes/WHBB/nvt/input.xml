@@ -11,6 +11,7 @@
     <trajectory stride='40' filename='pos' cell_units='angstrom'>positions{angstrom}</trajectory>
     <trajectory stride='40' filename='xc' format='xyz'>x_centroid{angstrom}</trajectory>
     <properties stride='40'> [time{picosecond}, conserved, temperature{kelvin},potential, kinetic_md, kinetic_cv, kinetic_cv(O), kinetic_cv(H)] </properties>
+    <trajectory stride='40' filename='dip' extra_type='dipole'> extras </trajectory>
   </output>
   <prng>
     <seed>18885</seed>

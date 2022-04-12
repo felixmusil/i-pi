@@ -38,4 +38,4 @@ getdms.x :  $(OBJ)
 	$(FC) -o $@  $^ $(FFLAGS) $(LIBS)
 
 clean :
-	rm *.o *.mod
+	rm *.o $(MODDIR)/*.mod $(LIBDIR)/*.a

@@ -74,8 +74,7 @@ contains
       chg_m(2*nw+i)=chgm(3)
       chg_m(2*i-1:2*i)=chgm(1:2)
     end do
-    write(*,*) "^^^^^^^^^^^^^^^^^^^"
-    write(*,*) chg_m(:)
+
 
     !get intrinsic atomic charges of each dimer
     chg_d=0.d0
@@ -85,8 +84,7 @@ contains
       call calcdip(dp2,chg2,transpose(x2))
       chg_d(idx)=chg_d(idx)+chg2
     end do
-    write(*,*) "+++++++++++++++++++"
-    write(*,*) chg_d(:)
+    
     chg_d=chg_d+chg_m
     dp=matmul(xx,chg_d)
 

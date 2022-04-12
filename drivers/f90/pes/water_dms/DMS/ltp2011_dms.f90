@@ -1613,8 +1613,7 @@ contains
 
     zLoaded = .true.
   endif
-  write(*,*) "--------------"
-  write(*,*) r1,r2,cos_theta
+  
   !***********
   ! Check that input makes sense
   if( abs(cos_theta) > 1.) write(*,*) 'WARNING: |cos(theta)| > 1 in DIPS'
