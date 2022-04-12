@@ -33,6 +33,7 @@
          USE PSWATER
          USE F90SOCKETS, ONLY : open_socket, writebuffer, readbuffer
          USE pes_shell, ONLY : pes_init, f, gradient
+         USE dms_shell, ONLY : dms_init, dipole_whbb
       IMPLICIT NONE
 
       ! SOCKET VARIABLES
@@ -455,6 +456,7 @@
                      STOP "ENDED"
                   ENDIF
                   call pes_init(nat / 3)
+                  call dms_init(nat / 3)
                ENDIF
             ENDIF
 
@@ -589,6 +591,7 @@
                   forces(i,:) = forcesbuffer(3*(i-1)+1:3*i)
                   ! write(*,'(I4,3F15.8)') i,forcesbuffer(i*3-2:i*3)
                ENDDO
+               CALL dipole_whbb(nat,msgbuffer,dip)
                ! WRITE(*,*) " pushed forces "
             ELSEIF (vstyle == 8) THEN ! PS water potential.
                IF (nat/=3) THEN
@@ -738,7 +741,7 @@
                 CALL writebuffer(socket,initbuffer,cbuf)
                 IF (verbose > 1) WRITE(*,*) "    !write!=> extra: ",  &
      &          initbuffer
-            ELSEIF (vstyle==5 .or. vstyle==6 .or. vstyle==8) THEN ! returns the dipole through initbuffer
+            ELSEIF (vstyle==5 .or. vstyle==6 .or. vstyle==8 .or. vstyle==26) THEN ! returns the dipole through initbuffer
                WRITE(initbuffer, '(a,3x,f15.8,a,f15.8,a,f15.8, &
      &         3x,a)') '{"dipole": [',dip(1),",",dip(2),",",dip(3),"]}"
                cbuf = LEN_TRIM(initbuffer)

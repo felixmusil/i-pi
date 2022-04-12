@@ -37,6 +37,9 @@ CC=gcc
 WHBBDIR := pes/WHBB
 WHBBLIBS := -L$(WHBBDIR)/libs -lWHBB
 WHBBFLAGS := -I$(WHBBDIR)/mods
+DMSDIR := pes/water_dms
+DMSLIBS := -L$(DMSDIR)/lib -ldms
+DMSFLAGS := -I$(DMSDIR)/mods
 
 all: driver.x #driver_pure.x
 
@@ -44,14 +47,14 @@ sockets.o: sockets.c
 	$(CC) $(CFLAGS) -c -o sockets.o sockets.c
 
 driver.x: $(OBJECTS) sockets.o fsockets.o driver.o | $(OBJECTS)
-	$(FC) $(FFLAGS) $(WHBBFLAGS) -o driver.x $^ $(WHBBLIBS)
+	$(FC) $(FFLAGS) $(WHBBFLAGS) $(DMSFLAGS) -o driver.x $^ $(WHBBLIBS) $(DMSLIBS)
 	ln -fs ../drivers/f90/driver.x ../../bin/i-pi-driver
 
 driver_pure.x: $(OBJECTS) fsockets_pure.o driver.o | $(OBJECTS)
-	$(FC) $(FFLAGS) $(WHBBFLAGS) -o driver_pure.x $^ $(WHBBLIBS)
+	$(FC) $(FFLAGS) $(WHBBFLAGS) $(DMSFLAGS) -o driver_pure.x $^ $(WHBBLIBS) $(DMSLIBS)
 
 %.o: %.f90
-	$(FC) $(FFLAGS) $(WHBBFLAGS) -c $< -o $@
+	$(FC) $(FFLAGS) $(WHBBFLAGS) $(DMSFLAGS) -c $< -o $@
 
 %.o: %.f
 	$(FC) $(FFLAGS) -c $< -o $@
