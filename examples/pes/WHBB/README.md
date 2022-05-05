@@ -28,6 +28,6 @@ Dipole moments
 H. Liu, Y. Wang and J. M. Bowman, J. Phys. Chem. B. 120(8),1735-1742,2016
 H. Liu, Y. Wang and J. M. Bowman, J. Chem. Phys. 142,194502,2015
 
-WHBB
+
 J. Chem. Phys. 134, 094509 (2011); https://doi.org/10.1063/1.3554905
 https://doi.org/10.1063/1.4967719
