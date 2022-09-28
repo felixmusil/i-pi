@@ -1577,7 +1577,7 @@ c
        return
        end
 C
-      SUBROUTINE PREPOT
+      SUBROUTINE PREPOT1
 C
 C   N3TMMN = 3 * NATOMS
 C   NATOMS = the number of atoms represented by this potential function

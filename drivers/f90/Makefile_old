@@ -21,29 +21,15 @@
 
 .PHONY: all modules clean
 
-LIBDIR := ../../../lib/pes_lib
-LIBDIR2 := ../../../lib/watlib
-MODDIR := ../../../lib/pes_lib/mod
-MODDIR2 := ../../../lib/watlib/mod3b
-
-FC := gfortran
-LIBS :=   -L$(LIBDIR) -L$(LIBDIR2) -lpes3b -lpes2b -ldms2b -lpes -lpx
-FFLAGS := -g -O3 -Wall -ffree-line-length-none -ffixed-line-length-none  -fdefault-real-8 -fdefault-double-8  -I$(MODDIR) -I$(MODDIR2)
+FLAGS=-g -O3 -Wall
+CFLAGS=$(FLAGS)
+FFLAGS=$(FLAGS) -ffree-line-length-none -ffixed-line-length-none -Wno-maybe-uninitialized
+#FFLAGS=-g -O0 -fcheck=all -Wall -pedantic -ffree-line-length-none
 
 MODULES=distance.f90 LJ.f90 SG.f90 pes/pswater.f90 pes/LEPS.f90 LJPolymer.f90 pes/efield.f90 pes/eckart.f90 pes/doublewell.f90 pes/doublewell_1D.f90 pes/MB.f90
-PES=pes/morse.f pes/qtip4pf.f pes/utility.f pes/ch52008.f
-PWATER := \
-pwater/constants.o\
-pwater/math.o  pwater/smear.o  pwater/ttm3f_mod2.o  pwater/mnasa_mod.o  pwater/mnasa.o  pwater/ttm3f_mb.o \
-pwater/pot_monomer_mod.o  pwater/pot_monomer.o  pwater/pes3b.o  pwater/shell_w.o  \
-pwater/chg.o pwater/ltp2011_dms.o pwater/pes_h.o pwater/dms_h.o pwater/shell_h.o  \
-pwater/h5o2.pes4B-dms4B.o  pwater/shell_hw.o  \
-pwater/bemsa.o pwater/shell_hww.o\
-pwater/shell_hwww.o\
-pwater/pes_shell_wt.o \
-
-OBJECTS=$(MODULES:%.f90=%.o) $(PES:%.f=%.o) $(PWATER:%.f90=%.o)
-
+PES=pes/zundel.f pes/morse.f pes/qtip4pf.f pes/utility.f pes/ch52008.f
+OBJECTS=$(MODULES:%.f90=%.o) $(PES:%.f=%.o)
+FC=gfortran
 CC=gcc
 all: driver.x #driver_pure.x
 
@@ -51,7 +37,7 @@ sockets.o: sockets.c
 	$(CC) $(CFLAGS) -c -o sockets.o sockets.c
 
 driver.x: $(OBJECTS) sockets.o fsockets.o driver.o | $(OBJECTS)
-	$(FC) -o $@  $^ $(FFLAGS) $(LIBS)
+	$(FC) $(FFLAGS) -o driver.x $^
 	ln -fs ../drivers/f90/driver.x ../../bin/i-pi-driver
 
 driver_pure.x: $(OBJECTS) fsockets_pure.o driver.o | $(OBJECTS)

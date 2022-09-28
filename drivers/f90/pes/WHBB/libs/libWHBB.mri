@@ -1,5 +1,0 @@
-create libWHBB.a
-addlib ../lib_src/3-body/libpes3b.a
-addlib ../src/libwhbb.a
-save
-end
