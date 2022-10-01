@@ -19,3 +19,4 @@ regtest-ref
 *.egg-info/
 *.nfs*
 *.so
+*.depend
