@@ -1,7 +1,8 @@
 # Q-aqua potential
 
-Examples input files to run MD with the q-aqua potential for h3o+, h5o2+, h7o3+ and h9o4+.
+Examples input files to run MD with the q-aqua potential for h3o+, h5o2+, h7o3+ and h9o4+. The `coef` folder contains the fited parameters and it has to be adjacent to the folder from which the simulation is run like here.
 To use this potential, `drivers/f90` needs to be compiled. Note that it might take a while.
+
 
 For reference, please refer to:
 (1) Q.Yu, J.M.Bowman, J. Chem. Phys. 146, 121102, 2017
