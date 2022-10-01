@@ -1,5 +1,5 @@
  FC = gfortran
-FFLAGS = -O -fdefault-real-8 -fdefault-double-8 -ffree-line-length-0 -J../mod 
+FFLAGS = -O -fdefault-real-8 -fdefault-double-8 -ffree-line-length-0 -J../mod
 BLD = /usr/bin/ar -rcv
 # Set objlibinv to the list of object files to be included in libinv.a.
 objlibinv = inv_wp.o inv_any.o \
@@ -172,7 +172,7 @@ libinv.a : $(objlibinv)
 
 # Targets 'clean' and 'realclean' clean up the directory.
 clean : FORCE
-	rm -f *.o *~ core junk
+	rm -f *.o *~ core junk *.a
 realclean : clean
 	rm -f *.a *.mod *.exe
 

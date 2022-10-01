@@ -48,14 +48,16 @@ objlibpx = px.o
 objects = $(objlibpes) $(objlibpx)
 libraries = libpes.a libpx.a
 
+LIBDIR = ../../../lib/pes_lib
+
 #-----------------------------------------------------------------------
 # Rules.
 
-all : $(objects) $(libraries)
+all : $(objects) $(libraries) CP $(LIBDIR)/libpes.a $(LIBDIR)/libpx.a
 obj : $(objects)
 lib : $(libraries)
 
-.PHONY : all obj lib clean realclean
+.PHONY : all obj lib CP clean realclean
 .SUFFIXES : $(nil)
 FORCE :
 
@@ -72,9 +74,12 @@ libpx.a : $(objlibpx)
 	\rm -f $@
 	$(BLD) $(@F) $(objlibpx)
 
+CP: $(objects) $(libraries)
+	cp -r ../mod $(LIBDIR)/
+	cp $(libraries) $(LIBDIR)/
 # targets 'clean' and 'realclean' clean up the directory.
 clean : FORCE
-	rm -f *.o *~ core junk
+	rm -f *.o *~ core junk *.a ../mod/*.mod
 realclean : clean
 	rm -f *.a *.mod
 # DO NOT DELETE

@@ -1,0 +1,33 @@
+<simulation verbosity='low' threading='True'>
+   <output prefix='simulation'>
+    <properties filename='out' stride='500'>  [ step, time{picosecond}, conserved, temperature{kelvin}, kinetic_md, potential ] </properties>
+    <trajectory filename='xc' stride='1' flush='1000' format='xyz'> x_centroid </trajectory>
+    <trajectory stride='1' flush='500' filename='dipole'> extras </trajectory>
+    <checkpoint stride='4000'></checkpoint>
+   </output>
+   <total_steps> 40000 </total_steps>
+   <prng><seed> 8516 </seed></prng>
+  <ffsocket mode='unix' name='d' pbc='False'>
+  <address>fc0fe8e990be81e66ee918f361efqzeerr</address>
+  </ffsocket>
+   <system>
+      <initialize nbeads='1'>
+         <file mode='xyz'> h9o4.xyz </file>
+         <velocities mode='thermal' units='kelvin'> 300 </velocities>
+      </initialize>
+      <forces>
+      <force forcefield='d' weight='1.0'> </force>
+      </forces>
+      <motion mode='dynamics'>
+         <dynamics mode='nvt'>
+            <timestep units='femtosecond'> 0.5 </timestep>
+              <thermostat mode='langevin'>
+                <tau units='femtosecond'> 100 </tau>
+              </thermostat>
+         </dynamics>
+      </motion>
+      <ensemble>
+         <temperature units='kelvin'> 300 </temperature>
+      </ensemble>
+   </system>
+</simulation>

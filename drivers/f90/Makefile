@@ -7,10 +7,10 @@
 # distribute, sublicense, and/or sell copies of the Software, and to
 # permit persons to whom the Software is furnished to do so, subject to
 # the following conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be included
 # in all copies or substantial portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 # EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 # MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
@@ -21,10 +21,10 @@
 
 .PHONY: all modules clean
 
-LIBDIR := ../../../lib/pes_lib
-LIBDIR2 := ../../../lib/watlib
-MODDIR := ../../../lib/pes_lib/mod
-MODDIR2 := ../../../lib/watlib/mod3b
+LIBDIR := q_aqua/lib/pes_lib
+LIBDIR2 := q_aqua/lib/watlib
+MODDIR := q_aqua/lib/pes_lib/mod
+MODDIR2 := q_aqua/lib/watlib/mod3b
 
 FC := gfortran
 LIBS :=   -L$(LIBDIR) -L$(LIBDIR2) -lpes3b -lpes2b -ldms2b -lpes -lpx
@@ -32,20 +32,22 @@ FFLAGS := -g -O3 -Wall -ffree-line-length-none -ffixed-line-length-none  -fdefau
 
 MODULES=distance.f90 LJ.f90 SG.f90 pes/pswater.f90 pes/LEPS.f90 LJPolymer.f90 pes/efield.f90 pes/eckart.f90 pes/doublewell.f90 pes/doublewell_1D.f90 pes/MB.f90
 PES=pes/morse.f pes/qtip4pf.f pes/utility.f pes/ch52008.f
+
+PWATERDIR = q_aqua/src/potential
 PWATER := \
-pwater/constants.o\
-pwater/math.o  pwater/smear.o  pwater/ttm3f_mod2.o  pwater/mnasa_mod.o  pwater/mnasa.o  pwater/ttm3f_mb.o \
-pwater/pot_monomer_mod.o  pwater/pot_monomer.o  pwater/pes3b.o  pwater/shell_w.o  \
-pwater/chg.o pwater/ltp2011_dms.o pwater/pes_h.o pwater/dms_h.o pwater/shell_h.o  \
-pwater/h5o2.pes4B-dms4B.o  pwater/shell_hw.o  \
-pwater/bemsa.o pwater/shell_hww.o\
-pwater/shell_hwww.o\
-pwater/pes_shell_wt.o \
+$(PWATERDIR)/constants.o\
+$(PWATERDIR)/math.o  $(PWATERDIR)/smear.o  $(PWATERDIR)/ttm3f_mod2.o  $(PWATERDIR)/mnasa_mod.o  $(PWATERDIR)/mnasa.o  $(PWATERDIR)/ttm3f_mb.o \
+$(PWATERDIR)/pot_monomer_mod.o  $(PWATERDIR)/pot_monomer.o  $(PWATERDIR)/pes3b.o  $(PWATERDIR)/shell_w.o  \
+$(PWATERDIR)/chg.o $(PWATERDIR)/ltp2011_dms.o $(PWATERDIR)/pes_h.o $(PWATERDIR)/dms_h.o $(PWATERDIR)/shell_h.o  \
+$(PWATERDIR)/h5o2.pes4B-dms4B.o  $(PWATERDIR)/shell_hw.o  \
+$(PWATERDIR)/bemsa.o $(PWATERDIR)/shell_hww.o\
+$(PWATERDIR)/shell_hwww.o\
+$(PWATERDIR)/pes_shell_wt.o \
 
 OBJECTS=$(MODULES:%.f90=%.o) $(PES:%.f=%.o) $(PWATER:%.f90=%.o)
 
 CC=gcc
-all: driver.x #driver_pure.x
+all: qaqua2b qaqua3b qaquapes driver.x #driver_pure.x
 
 sockets.o: sockets.c
 	$(CC) $(CFLAGS) -c -o sockets.o sockets.c
@@ -63,5 +65,21 @@ driver_pure.x: $(OBJECTS) fsockets_pure.o driver.o | $(OBJECTS)
 %.o: %.f
 	$(FC) $(FFLAGS) -c $< -o $@
 
+qaqua2b:
+	$(MAKE) -C q_aqua/src/water_lib/2-body/pes
+	$(MAKE) -C q_aqua/src/water_lib/2-body/dms
+qaqua3b:
+	$(MAKE) -C q_aqua/src/water_lib/3-body
+qaquainv:
+	$(MAKE) -C q_aqua/src/pes_lib/inv
+qaquapes: qaquainv
+	$(MAKE) -C q_aqua/src/pes_lib/pes-xyz
+
+
 clean:
+	$(MAKE) -C q_aqua/src/water_lib/2-body/pes clean
+	$(MAKE) -C q_aqua/src/water_lib/2-body/dms clean
+	$(MAKE) -C q_aqua/src/water_lib/3-body clean
+	$(MAKE) -C q_aqua/src/pes_lib/inv clean
+	$(MAKE) -C q_aqua/src/pes_lib/pes-xyz clean
 	rm -f *.o *.mod *.x */*.mod */*.o ../../bin/i-pi-driver
