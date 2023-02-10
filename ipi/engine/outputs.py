@@ -344,6 +344,7 @@ class TrajectoryOutput(BaseOutput):
             "positions",
             "velocities",
             "forces",
+            "forces_spring",
             "extras",
             "extras_component",
             "forces_sc",
@@ -519,6 +520,7 @@ class TrajectoryOutput(BaseOutput):
             "positions",
             "velocities",
             "forces",
+            "forces_spring",
             "forces_sc",
             "momenta",
         ]:
